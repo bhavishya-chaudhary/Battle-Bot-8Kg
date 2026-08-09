@@ -1,1 +1,1 @@
-# Battle-Bot-8-Kgs-
+# Battle-Bot-8Kg
