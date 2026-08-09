@@ -42,8 +42,8 @@
 //  WIFI CREDENTIALS -- EDIT THESE
 // ================================================================
 
-const char* WIFI_SSID     = "AndroidAP_6259";
-const char* WIFI_PASSWORD = "11221122";
+const char* WIFI_SSID     = "enter your Wifi name here";
+const char* WIFI_PASSWORD = "enter your Wifi password here";
 
 // ================================================================
 //  DEBUG

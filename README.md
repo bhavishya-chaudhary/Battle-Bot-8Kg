@@ -189,3 +189,21 @@ The robot reached competition, with the weapon transmission sprocket failing dur
 ## License
 
 This project is released under the [MIT License](LICENSE).
+
+---
+
+## Images
+
+Unless otherwise stated, all photographs, renders, and project images in this repository are © Bhavishya Chaudhary.
+
+The images are provided to document the development of the project and may not be reproduced, redistributed, or used in other projects without permission.
+
+The source code in this repository remains licensed under the MIT License.
+
+---
+
+## Author
+
+**Bhavishya Chaudhary**
+
+If you have any questions or suggestions, feel free to connect with me on LinkedIn or GitHub.

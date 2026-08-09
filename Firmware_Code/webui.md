@@ -2,8 +2,8 @@
 
 ## Access
 
--   **Wi-Fi SSID:** `AndroidAP_6259`
--   **Wi-Fi Password:** `11221122`
+-   **Wi-Fi SSID:** `update it in firmware before flashing it at line 45`
+-   **Wi-Fi Password:** `update it in firmware before flashing it at line 46`
 -   **Dashboard:** `http://<ESP32-IP>/`
 -   **OTA Update:** `http://<ESP32-IP>/update`
 -   **OTA Username:** `admin`
