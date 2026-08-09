@@ -1,10 +1,9 @@
 # Battle Bot — 8 kg Vertical Spinner Combat Robot
 
-> **Team Spartans | RoboWars | Mechanical Design • Embedded Control • Electronics • Manufacturing**
 
 An **8 kg vertical spinner combat robot** designed and built as a team project for RoboWars.
 
-The robot combines a custom SolidWorks-designed aluminium chassis, UHMWPE and stainless-steel protection, a chain-driven vertical spinner, high-current power electronics, an ESP32-based control system, configurable weapon power, and multiple independent safety mechanisms.
+The robot combines a custom SolidWorks-designed aluminium chassis, UHMWPE and stainless-steel protection, a chain-driven vertical spinner, high-current power electronics, an ESP32-based control system, and multiple independent safety mechanisms.
 
 The project followed a **prototype → validation → final integration → competition** workflow, bringing together mechanical design, manufacturing, electronics, embedded programming, control systems, and system integration.
 
@@ -74,15 +73,13 @@ The ESP32 sits between the RC receiver and the actuators, providing additional c
 | Wheels | 100 mm heavy-duty wheels |
 | Weapon motor | D3548 BLDC |
 | Weapon motor KV | 790 KV |
-| Weapon ESC | 80 A |
+| Weapon ESC | 80 A, 6S|
 | Weapon transmission | Chain + sprocket |
-| Controller | ESP32 |
+| Controller | ESP32 Wroom |
 | Transmitter | FlySky FS-i6S |
 | Receiver | FlySky FS-i10AB |
 | Battery | 2 × 3S 4200 mAh 35C LiPo in series |
 | Battery configuration | 6S, 4200 mAh |
-| Nominal battery voltage | 22.2 V |
-| Fully charged voltage | 25.2 V |
 | Low-voltage supply | XL4051 5 A buck converter |
 | High-current wiring | AWG 10 silicone wire |
 | Main connectors | XT60 |
@@ -140,65 +137,25 @@ The CAD assembly was used to plan component placement before fabrication.
 
 ## Weapon System
 
-The robot uses a **vertical spinner weapon** driven by a BLDC motor through a chain-and-sprocket transmission.
+The bot uses a **vertical spinner weapon** driven by a BLDC motor through a chain-and-sprocket transmission.
 
-### Weapon Drive
 
-- **D3548 BLDC motor**
-- **790 KV**
-- **80 A ESC**
-- **6S battery system**
-- Chain and sprocket transmission
-- Supported weapon shaft with bearings
-
-The chain-driven arrangement allowed the motor and weapon assembly to be packaged within the chassis while providing flexibility in the mechanical layout.
+The chain-driven arrangement allowed the motor and weapon assembly to be packaged within the chassis while providing flexibility in the mechanical layout and working without putting much tension on motor shaft.
 
 ### Weapon RPM
 
-The motor's theoretical no-load speed can be estimated using:
 
-```text
-RPM ≈ KV × Battery Voltage
-```
+The weapon RPM was about ***15000 RPM**.
 
-At nominal 6S voltage:
-
-```text
-790 × 22.2 ≈ 17,538 RPM
-```
-
-At fully charged 6S voltage:
-
-```text
-790 × 25.2 ≈ 19,908 RPM
-```
-
-Therefore, the theoretical no-load motor speed is approximately:
-
-**17,500–19,900 RPM**
-
-However, the actual weapon RPM was **not directly measured** during the project.
-
-Actual operating speed would be affected by:
-
-- Motor loading
-- Battery voltage sag
-- ESC behaviour
-- Mechanical losses
-- Weapon inertia
-- Aerodynamic drag
-
-Therefore, any ~15,000 RPM figure associated with the project should be treated as an **approximate operating estimate rather than a measured RPM value**.
 
 ### Attacker CAD Mass Properties
 
-The `Attacker_v5` SolidWorks model had the following reported properties:
+The SolidWorks calculated porperties of the Vertical Spinner are as follows:
 
 | Property | CAD Value |
 |---|---:|
 | Mass | 557.24 g |
 | Volume | 70,975.33 mm³ |
-| Surface area | 15,437.36 mm² |
 | Density | 0.007858 g/mm³ |
 
 The model's reported principal moments included approximately:
@@ -207,7 +164,7 @@ The model's reported principal moments included approximately:
 - Py: 351,575.39 g·mm²
 - Pz: 386,648.41 g·mm²
 
-> **Important:** This CAD mass represents the referenced attacker model and **not the complete rotating weapon assembly**. The referenced model information did not include the shaft, sprocket, and motor.
+> **Important:** This CAD mass represents the referenced attacking spinner model and **not the complete rotating weapon assembly**. The referenced model information did not include the shaft, sprocket, and motor.
 
 ---
 
@@ -244,33 +201,13 @@ To improve traction, cricket-bat grip rubber was cut and applied to the drive wh
 
 This was a simple, readily available solution for increasing wheel grip without requiring a specialized wheel compound.
 
-The drive system also used approximately **8 mm ID motor-wheel coupling arrangements** for the motor-to-wheel connection.
+The drive system also used approximately **8 mm ID motor-wheel coupling arrangements** for anti-slip motor-to-wheel connection.
 
 ---
 
 ## Electronics & Control
 
 One of the main technical aspects of the project was the decision to place an **ESP32 control layer between the RC receiver and the actuators**.
-
-Instead of:
-
-```text
-Receiver → Motor Controller
-```
-
-the architecture became:
-
-```text
-Receiver
-   ↓
- ESP32
-   ↓
-Control / Safety Logic
-   ↓
-Motor Controllers / ESC
-   ↓
-Actuators
-```
 
 This allowed additional control and safety functionality to be implemented in software.
 
@@ -283,8 +220,7 @@ The ESP32 handled:
 - RC signal processing
 - Channel mixing
 - Tank steering
-- Non-linear throttle response
-- Non-linear steering response
+- Ploynomial throttle & steering responses
 - Weapon control
 - Weapon power modes
 - Arming and disarming
@@ -297,15 +233,8 @@ The ESP32 handled:
 
 ### Non-linear Throttle & Steering
 
-The control system used **non-linear throttle and steering curves** rather than a simple linear mapping.
+The control system used **ploynomial throttle and steering curves** with tunable index rather than a simple linear mapping.
 
-Instead of:
-
-```text
-RC Input → Linear Motor Output
-```
-
-the input was shaped to provide greater control at lower speeds while still allowing high output when required.
 
 This was particularly useful for combat operation, where precise positioning and rapid movement can both be important.
 
@@ -315,17 +244,19 @@ This was particularly useful for combat operation, where precise positioning and
 
 The weapon control system provided three levels of weapon output using the same physical potentiometer.
 
+Modes are changed by a 3 position switch on Transmitter.
+
 ### Mode 1 — Controlled
 
-The potentiometer command was scaled to approximately **50% of the full command range**.
+The potentiometer command was scaled to approximately **50% of the full power**.
 
 ### Mode 2 — Higher Power
 
-A transmitter 3-position switch selected a higher scaling, allowing approximately **90% of the available command range**.
+The potentiometer command was scaled to approximately **90% of the full power**.
 
 ### Mode 3 — Full Power
 
-A full-power override bypassed the potentiometer scaling and commanded approximately **100% output**.
+A full-power override bypassed the potentiometer scaling and commanded approximately **100% power**.
 
 ```text
           Weapon Power
@@ -352,7 +283,7 @@ This allowed combinations such as:
 - Both disarmed
 - Both armed
 
-Independent arming provided an additional layer of operational safety.
+Independent arming provided an additional layer of operational safety during testing.
 
 ---
 
@@ -381,29 +312,6 @@ ESP32 brownout and reset conditions were also considered as part of the safety a
 ### Emergency / Failsafe Command
 
 The control system included a user-triggered emergency/failsafe mechanism.
-
-### Overall Safety Concept
-
-```text
-             ┌──────────────────┐
-             │ Physical Kill    │
-             │ Switch           │
-             └────────┬─────────┘
-                      │
-        ┌─────────────┼─────────────┐
-        ▼             ▼             ▼
-   Radio Loss      Watchdog      Brownout
-    Failsafe       Handling      Handling
-        │             │             │
-        └─────────────┼─────────────┘
-                      ▼
-                 SAFE STATE
-                      │
-                      ▼
-             Motors / Weapon OFF
-```
-
----
 
 ## Web UI
 
@@ -473,21 +381,6 @@ The design also considered grounding, electrical noise, and transient protection
 
 ---
 
-## Wiring & Electrical Robustness
-
-High-current connections used:
-
-- AWG 10 silicone wire
-- XT60 connectors
-- Heat-shrink insulation
-- Mechanical fastening
-- Zip ties
-- Epoxy where required
-
-The goal was not only electrical connectivity, but also **mechanical robustness under vibration and impact**.
-
----
-
 ## Cooling
 
 A **24 V cooling fan** was incorporated for thermal management of the electronics and power system.
@@ -515,6 +408,7 @@ Fabrication was split between outsourced manufacturing and in-house work.
 
 The remaining work was carried out by the team in the college labs, including:
 
+- Manufacturing (Cutting, Drilling, Grinding, Soldering, etc)
 - Mechanical assembly
 - Electronics assembly
 - Wiring
@@ -580,47 +474,11 @@ The final robot incorporated:
 - Final wiring
 - Complete combat configuration
 
-### Development Flow
-
-```text
-CAD / System Design
-        ↓
-Simplified Prototype
-        ↓
-Electronics & Firmware Validation
-        ↓
-Control / Safety Testing
-        ↓
-Final Mechanical Design
-        ↓
-Mechanical + Electrical Integration
-        ↓
-Testing
-        ↓
-RoboWars Competition
-```
-
----
-
-## Prototype vs Final Robot
-
-| Prototype | Final Robot |
-|---|---|
-| Simplified body | Final aluminium chassis |
-| Direct flexible weapon coupling | Chain + sprocket transmission |
-| Primarily validation-focused | Full combat configuration |
-| Simplified mechanical system | UHMWPE + stainless protection |
-| Electronics/control testing | Integrated final electronics |
-
-The prototype was therefore not simply an earlier version of the same robot; it was used as a **validation platform before committing to the final mechanical configuration**.
-
----
-
 ## Competition
 
 The completed robot was taken to **RoboWars** and competed in an actual combat environment.
 
-The robot did not win its match.
+The robot did not win its match in Round 2.
 
 The critical failure occurred in the **weapon transmission**, where the sprocket broke under combat loading.
 
