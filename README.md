@@ -39,12 +39,10 @@ flowchart LR
 
     ESC["80 A ESC"]
     WM["D3548<br/>790 KV BLDC"]
-    CHAIN["Chain &<br/>Sprocket"]
-    SPINNER["Vertical<br/>Spinner"]
 
     TX --> RX --> ESP
     ESP --> DRIVE --> DM
-    ESP --> ESC --> WM --> CHAIN --> SPINNER
+    ESP --> ESC --> WM
 ```
 
 The ESP32 acts as the control layer between the RC receiver and the actuators, providing signal processing, mixing, control shaping, weapon control, arming, failsafes, configuration, and diagnostics.
